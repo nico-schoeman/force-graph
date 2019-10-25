@@ -58,9 +58,21 @@ export class RepulseSystem extends System {
                 return !allLinkedNodesIds.includes(otherNode.id)
             });
 
-            console.log(node, allOtherNodes);
+            let linkedNodePosition = node.getComponent(Position);
+            let linkedNodeVelocity = linkedNode.getComponent(Velocity);
 
-            //TODO: repulse here
+            allOtherNodes.forEach((otherNode) => {
+                let otherNodePosition = otherNode.getComponent(Position);
+                let distance = linkedNodePosition.value.distance(otherNodePosition.value);
+                let proximity = Math.max(distance, 1);
+
+                let force = -repulsion / proximity;
+                let vector = otherNodePosition.value.subtract(linkedNodePosition.value);
+                vector = vector.normalize();
+                vector.scale(force);
+
+                linkedNodeVelocity.value.add(vector);
+            })
         });
     }
 }
