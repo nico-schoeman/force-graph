@@ -4,8 +4,8 @@ import {
     System,
     TagComponent
 } from "./node_modules/ecsy/build/ecsy.module.js";
-import { Position, Velocity, Link } from "./components.js";
-import { AttractSystem, RepulseSystem } from "./systems.js";
+import { Position, Velocity, Link, Anchor } from "./components.js";
+import { AttractSystem, RepulseSystem, MoveSystem, RenderSystem } from "./systems.js";
 import Vector2 from "./vector2.js";
 
 let canvas = document.querySelector("canvas");
@@ -14,13 +14,13 @@ let canvasHeight = (canvas.height = window.innerHeight);
 let ctx = canvas.getContext("2d");
 
 let world = new World();
-world.registerSystem(AttractSystem).registerSystem(RepulseSystem);
+world.registerSystem(AttractSystem).registerSystem(RepulseSystem).registerSystem(MoveSystem).registerSystem(RenderSystem);
 
 async function addNode() {
     let node = await world
         .createEntity()
         .addComponent(Position, {
-            value: new Vector2(Math.random() * 10, Math.random() * 10)
+            value: new Vector2(Math.random() * (canvasWidth/2), Math.random() * (canvasHeight/2))
         })
         .addComponent(Velocity);
     return node;
@@ -45,13 +45,19 @@ async function setup() {
 
     let link3 = await addLink(node1.id, node3.id);
 
-    console.log(node1, node2, node3, node4);
-    // console.log(node2);
-    // console.log(link);
-    // console.log(world.entityManager._entities[2]);
+    let node5 = await addNode();
+    let node6 = await addNode();
+    let link4 = await addLink(node2.id, node5.id);
+    let link5 = await addLink(node2.id, node6.id);
+
+    let node7 = await addNode();
+    let link6 = await addLink(node1.id, node7.id);
+
+    node1.addComponent(Anchor);
+    //console.log(node1, node2, node3, node4);
 }
 setup();
 
 setInterval(() => {
     world.execute();
-}, 3 * 1000);
+}, 1 * 1000 / 30);
