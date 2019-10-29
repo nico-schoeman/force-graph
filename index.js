@@ -1,11 +1,15 @@
-//import { World, System, TagComponent } from "https://ecsy.io/build/ecsy.module.js";
 import {
     World,
     System,
     TagComponent
 } from "./node_modules/ecsy/build/ecsy.module.js";
 import { Position, Velocity, Link, Anchor } from "./components.js";
-import { AttractSystem, RepulseSystem, MoveSystem, RenderSystem } from "./systems.js";
+import {
+    AttractSystem,
+    RepulseSystem,
+    MoveSystem,
+    RenderSystem
+} from "./systems.js";
 import Vector2 from "./vector2.js";
 
 let canvas = document.querySelector("canvas");
@@ -14,13 +18,20 @@ let canvasHeight = (canvas.height = window.innerHeight);
 let ctx = canvas.getContext("2d");
 
 let world = new World();
-world.registerSystem(AttractSystem).registerSystem(RepulseSystem).registerSystem(MoveSystem).registerSystem(RenderSystem);
+world
+    .registerSystem(AttractSystem)
+    .registerSystem(RepulseSystem)
+    .registerSystem(MoveSystem)
+    .registerSystem(RenderSystem);
 
 async function addNode() {
     let node = await world
         .createEntity()
         .addComponent(Position, {
-            value: new Vector2(Math.random() * (canvasWidth/2), Math.random() * (canvasHeight/2))
+            value: new Vector2(
+                ((Math.random()-0.5)*0.1) + (canvasWidth / 2),
+                ((Math.random()-0.5)*0.1) + (canvasHeight / 2)
+            )
         })
         .addComponent(Velocity);
     return node;
@@ -58,6 +69,15 @@ async function setup() {
 }
 setup();
 
-setInterval(() => {
-    world.execute();
-}, 1 * 1000 / 30);
+function animate() {
+    var time = performance.now();
+    var delta = time - lastTime;
+    world.execute(delta, time);
+    lastTime = time;
+    requestAnimationFrame(animate);
+}
+
+var lastTime = performance.now();
+animate();
+
+window.world = world;

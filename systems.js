@@ -2,9 +2,9 @@ import { System, Not } from "./node_modules/ecsy/build/ecsy.module.js";
 import { Position, Velocity, Anchor, Link } from "./components.js";
 import Vector2 from "./vector2.js";
 
-let repulsion = 100;
-let attraction = 100;
-let spring = 100;
+let repulsion = 10;
+let attraction = 1;
+let spring = 50;
 
 export class AttractSystem extends System {
     execute (delta, time) {
@@ -45,19 +45,6 @@ AttractSystem.queries = {
 export class RepulseSystem extends System {
     execute (delta, time) {
         this.queries.nodes.results.forEach((node) => {
-            let links = this.queries.links.results.reduce((linkResults, linkEntity) => {
-                let link = linkEntity.getComponent(Link);
-                if (node.id === link.from || node.id === link.to)
-                linkResults.push(link);
-                return linkResults;
-            }, []);
-            let otherLinkedNodesIds = links.map((link) => {
-                return link.from !== node.id ? link.from : link.to;
-            })
-            let allLinkedNodesIds = [node.id, ...otherLinkedNodesIds];
-            // let allOtherNodes = this.queries.nodes.results.filter((otherNode) => {
-            //     return !allLinkedNodesIds.includes(otherNode.id)
-            // });
             let allOtherNodes = this.queries.nodes.results.filter((otherNode) => {
                 return otherNode.id !== node.id
             });
@@ -72,7 +59,7 @@ export class RepulseSystem extends System {
 
                 let force = -repulsion / proximity;
                 let vector = otherNodePosition.value.subtract(linkedNodePosition.value);
-                vector = vector.magnitude() > 0 ? vector.normalize() : new Vector2(Math.random(), Math.random());
+                vector = vector.normalize();
                 vector = vector.scale(force);
 
                 linkedNodeVelocity.value = linkedNodeVelocity.value.add(vector);
@@ -94,8 +81,8 @@ export class MoveSystem extends System {
         this.queries.nodes.results.forEach((node) => {
             let position = node.getMutableComponent(Position);
             let velocity = node.getMutableComponent(Velocity);
-            position.value = position.value.add(velocity.value);
-            velocity.value = velocity.value.scale(0.5);
+            position.value = position.value.add(velocity.value.scale(delta));
+            velocity.value = velocity.value.scale(0);
         })
     }
 }
