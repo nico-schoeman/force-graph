@@ -65,21 +65,21 @@
         async function setup() {
             let node1 = await addNode();
             let node2 = await addNode();
-            let link1 = await addLink(node1.id, node2.id);
+            let link1 = await addLink(node1, node2);
 
             let node3 = await addNode();
             let node4 = await addNode();
-            let link2 = await addLink(node3.id, node4.id);
+            let link2 = await addLink(node3, node4);
 
-            let link3 = await addLink(node1.id, node3.id);
+            let link3 = await addLink(node1, node3);
 
             let node5 = await addNode();
             let node6 = await addNode();
-            let link4 = await addLink(node2.id, node5.id);
-            let link5 = await addLink(node2.id, node6.id);
+            let link4 = await addLink(node2, node5);
+            let link5 = await addLink(node2, node6);
 
             let node7 = await addNode();
-            let link6 = await addLink(node1.id, node7.id);
+            let link6 = await addLink(node1, node7);
 
             anchorNode(node1);
         }

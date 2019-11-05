@@ -46,7 +46,7 @@ export async function addNode() {
 export async function addLink(fromNode, toNode) {
     let link = await window.world
         .createEntity()
-        .addComponent(Link, { from: fromNode, to: toNode });
+        .addComponent(Link, { from: fromNode.id, to: toNode.id });
     return link;
 }
 
