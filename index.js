@@ -1,4 +1,4 @@
-import { World } from "./node_modules/ecsy/build/ecsy.module.js";
+import { World, Entity } from "./node_modules/ecsy/build/ecsy.module.js";
 import { Position, Velocity, Link, Anchor } from "./components.js";
 import {
     AttractSystem,
@@ -7,9 +7,10 @@ import {
 } from "./systems.js";
 import Vector2 from "./vector2.js";
 
-export function createForceGraph () {
-    let world = new World();
-    world
+export function force_graph () {
+    this.world = new World();
+
+    this.world
         .registerSystem(AttractSystem)
         .registerSystem(RepulseSystem)
         .registerSystem(MoveSystem);
@@ -17,21 +18,18 @@ export function createForceGraph () {
     function animate() {
         var time = performance.now();
         var delta = time - lastTime;
-        world.execute(delta, time);
+        this.world.execute(delta, time);
         lastTime = time;
-        requestAnimationFrame(animate);
+        requestAnimationFrame(animate.bind(this));
     }
 
     var lastTime = performance.now();
-    animate();
-
-    window.world = world;
-    window.world.createEntity(); //Random entity to index properly
-    return window.world;
+    animate.bind(this)();
+    this.world.createEntity(); //Random entity to index properly
 }
 
-export async function addNode() {
-    let node = await window.world
+force_graph.prototype.addNode = async function() {
+    let node = await this.world
         .createEntity()
         .addComponent(Position, {
             value: new Vector2(
@@ -43,14 +41,19 @@ export async function addNode() {
     return node;
 }
 
-export async function addLink(fromNode, toNode) {
-    let link = await window.world
+force_graph.prototype.addLink = async function(fromNode, toNode) {
+    let link = await this.world
         .createEntity()
         .addComponent(Link, { from: fromNode.id, to: toNode.id });
     return link;
 }
 
-export async function anchorNode (node) {
+Entity.prototype.makeAnchor = function() {
+    this.addComponent(Anchor);
+    return this;
+}
+
+force_graph.prototype.anchorNode = async function(node) {
     node.addComponent(Anchor);
     return node;
 }
