@@ -13,16 +13,20 @@
         import { System } from "./node_modules/ecsy/build/ecsy.module.js";
         import { Position, Velocity, Link } from "./components.js";
         import { force_graph } from './index.js';
-        //TODO click system
+        //TODO edges of canvas
+        //TODO stability
         //TODO node data/pictures/functions examples and documentation
+
+        let canvas = document.querySelector("canvas");
+        let canvasWidth = (canvas.width= window.innerWidth);
+        let canvasHeight = (canvas.height= window.innerHeight);
+        let ctx = canvas.getContext("2d");
 
         export class RenderSystem extends System {
             execute (delta, time) {
-                let canvas = document.querySelector("canvas");
-                let canvasWidth = (canvas.width = window.innerWidth);
-                let canvasHeight = (canvas.height = window.innerHeight);
-                let ctx = canvas.getContext("2d");
-
+                ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+                ctx.fillStyle = "gray";
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
                 this.queries.nodes.results.forEach((node) => {
                     let nodePosition = node.getComponent(Position);
                     this.drawCircle(ctx, nodePosition.value);
@@ -61,9 +65,43 @@
             }
         }
 
+        export class InputSystem extends System {
+            execute (delta, time, click) {
+                if (click) {
+                    this.queries.nodes.results.forEach((node) => {
+                        let pos = node.getComponent(Position).value;
+                        if (click.offsetY > pos.y - 10 && click.offsetY < pos.y + 10 && click.offsetX > pos.x - 10 && click.offsetX < pos.x + 10) {
+                            this.attachNewNode(node);
+                        }
+                    })
+                }
+            }
+
+            click (event) {
+                console.log('click', event);
+                this.execute(0, 0, event);
+            }
+
+            async attachNewNode (node) {
+                console.log('clicked an element', node);
+                let newNode = await forceGraph.addNode();
+                let newLink = await forceGraph.addLink(node, newNode);
+            }
+        }
+        InputSystem.queries = {
+            nodes: {
+                components: [Position]
+            }
+        }
+
         let forceGraph = new force_graph();
         console.log(forceGraph);
-        forceGraph.world.registerSystem(RenderSystem)
+        forceGraph.world.registerSystem(RenderSystem).registerSystem(InputSystem);
+
+        canvas.addEventListener('click', (event) => {
+            let inputSystem = forceGraph.world.getSystem(InputSystem);
+            inputSystem.click(event);
+        });
 
         async function setup() {
             let node1 = await forceGraph.addNode();
