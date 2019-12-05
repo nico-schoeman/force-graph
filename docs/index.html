@@ -13,9 +13,7 @@
         import { System } from 'https://ecsy.io/build/ecsy.module.js';
         import { Position, Velocity, Link } from "../components.js";
         import { force_graph } from '../index.js';
-        //TODO option to constrain edges of canvas
         //TODO option to constrain node max distance
-        //TODO stability
         //TODO node data/pictures/functions examples and documentation
 
         let canvas = document.querySelector("canvas");
@@ -83,12 +81,10 @@
             }
 
             click (event) {
-                console.log('click', event);
                 this.execute(0, 0, event);
             }
 
             async attachNewNode (node) {
-                console.log('clicked an element', node);
                 let newNode = await forceGraph.addNode();
                 let newLink = await forceGraph.addLink(node, newNode);
             }
@@ -100,7 +96,6 @@
         }
 
         let forceGraph = new force_graph();
-        console.log(forceGraph);
         forceGraph.world.registerSystem(RenderSystem).registerSystem(InputSystem);
 
         canvas.addEventListener('click', (event) => {
@@ -127,7 +122,6 @@
             let node7 = await forceGraph.addNode();
             let link6 = await forceGraph.addLink(node1, node7);
 
-            console.log(node1);
             forceGraph.anchorNode(node1);
         }
         setup();
