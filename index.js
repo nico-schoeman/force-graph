@@ -12,9 +12,10 @@ export function force_graph (width = window.innerWidth, height = window.innerHei
     this.world.constrainInsideEdges = constrainInsideEdges;
     this.world.width = width;
     this.world.height = height;
-    this.world.repulsion = 10;
+    this.world.repulsion = 1;
     this.world.attraction = 1;
     this.world.spring = 50;
+    this.world.radius = 500;
 
     this.world
         .registerSystem(AttractSystem)
@@ -34,14 +35,15 @@ export function force_graph (width = window.innerWidth, height = window.innerHei
     this.world.createEntity(); //Random entity to index properly
 }
 
-force_graph.prototype.addNode = async function() {
+force_graph.prototype.addNode = async function(x, y) {
+    let newPos = new Vector2(
+        x || ((Math.random()-0.5)*0.1) + (window.innerWidth / 2),
+        y || ((Math.random()-0.5)*0.1) + (window.innerHeight / 2)
+    )
     let node = await this.world
         .createEntity()
         .addComponent(Position, {
-            value: new Vector2(
-                ((Math.random()-0.5)*0.1) + (window.innerWidth / 2),
-                ((Math.random()-0.5)*0.1) + (window.innerHeight / 2)
-            )
+            value: newPos
         })
         .addComponent(Velocity);
     return node;

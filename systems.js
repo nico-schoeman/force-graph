@@ -2,8 +2,6 @@ import { System, Not } from "./node_modules/ecsy/build/ecsy.module.js";
 import { Position, Velocity, Anchor, Link } from "./components.js";
 import Vector2 from "./vector2.js";
 
-//TODO: better proximity calculation
-//TODO: handle node inside node case
 export class AttractSystem extends System {
     execute (delta, time) {
         this.queries.links.results.forEach(linkEntity => {
@@ -81,10 +79,11 @@ export class RepulseSystem extends System {
 
     calculateVector (myPos, otherPos) {
         let distance = myPos.distance(otherPos);
+        if (distance > this.world.radius) return new Vector2(0, 0);
         let proximity = Math.max(distance, 1);
 
         let force = -this.world.repulsion / proximity;
-        let vector = otherPos.subtract(myPos);
+        let vector = myPos.x != otherPos.x && myPos.y != otherPos.y ? otherPos.subtract(myPos) : new Vector2(Math.random() - 0.5, Math.random() - 0.5);
         vector = vector.normalize();
         vector = vector.scale(force);
 

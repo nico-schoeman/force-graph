@@ -13,7 +13,6 @@
         import { System } from 'https://ecsy.io/build/ecsy.module.js';
         import { Position, Velocity, Link } from "../components.js";
         import { force_graph } from '../index.js';
-        //TODO option to constrain node max distance
         //TODO node data/pictures/functions examples and documentation
 
         let canvas = document.querySelector("canvas");
@@ -85,7 +84,8 @@
             }
 
             async attachNewNode (node) {
-                let newNode = await forceGraph.addNode();
+                let pos = node.getComponent(Position).value;
+                let newNode = await forceGraph.addNode(pos.x, pos.y);
                 let newLink = await forceGraph.addLink(node, newNode);
             }
         }
@@ -97,6 +97,8 @@
 
         let forceGraph = new force_graph();
         forceGraph.world.registerSystem(RenderSystem).registerSystem(InputSystem);
+        window.forceGraph = forceGraph;
+        console.log(forceGraph);
 
         canvas.addEventListener('click', (event) => {
             let inputSystem = forceGraph.world.getSystem(InputSystem);
@@ -105,24 +107,17 @@
 
         async function setup() {
             let node1 = await forceGraph.addNode();
-            let node2 = await forceGraph.addNode();
-            let link1 = await forceGraph.addLink(node1, node2);
-
-            let node3 = await forceGraph.addNode();
-            let node4 = await forceGraph.addNode();
-            let link2 = await forceGraph.addLink(node3, node4);
-
-            let link3 = await forceGraph.addLink(node1, node3);
-
-            let node5 = await forceGraph.addNode();
-            let node6 = await forceGraph.addNode();
-            let link4 = await forceGraph.addLink(node2, node5);
-            let link5 = await forceGraph.addLink(node2, node6);
-
-            let node7 = await forceGraph.addNode();
-            let link6 = await forceGraph.addLink(node1, node7);
-
             forceGraph.anchorNode(node1);
+
+            let inputSystem = forceGraph.world.getSystem(InputSystem);
+            for (let i = 0; i < 30; i++) {
+                setTimeout(() => {
+                    let allEntities = inputSystem.queries.nodes.results;
+                    let index = Math.floor(Math.random() * (allEntities.length));
+                    let randomEntity = allEntities[index];
+                    inputSystem.attachNewNode(randomEntity);
+                }, 50 * i);
+            }
         }
         setup();
     </script>
