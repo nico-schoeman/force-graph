@@ -1,14 +1,18 @@
 {
-    "name": "force-graph",
+    "name": "@nico-schoeman/force-graph",
     "version": "1.0.0",
     "description": "description",
     "main": "index.js",
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "auth": "npm login --registry=https://npm.pkg.github.com/",
+        "publish": "npm publish"
     },
     "author": "Nico Schoeman",
     "license": "ISC",
     "dependencies": {
         "ecsy": "^0.1.4"
-    }
+    },
+    "repository": "git://github.com/nico-schoeman/force-graph.git",
+    "publishConfig": { "registry": "https://npm.pkg.github.com/" }
 }
