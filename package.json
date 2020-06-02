@@ -1,6 +1,6 @@
 {
     "name": "@nico-schoeman/force-graph",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "description": "description",
     "main": "index.js",
     "scripts": {
@@ -10,6 +10,7 @@
     },
     "author": "Nico Schoeman",
     "license": "ISC",
+    "bundleDependencies": ["ecsy"],
     "dependencies": {
         "ecsy": "^0.2.4"
     },

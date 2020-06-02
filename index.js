@@ -66,3 +66,5 @@ force_graph.prototype.anchorNode = async function(node) {
     node.addComponent(Anchor);
     return node;
 }
+
+exports.force_graph = force_graph;
