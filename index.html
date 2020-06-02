@@ -10,7 +10,7 @@
     <canvas></canvas>
 
     <script type="module">
-        import { System } from 'https://ecsy.io/build/ecsy.module.js';
+        import { System } from "./node_modules/ecsy/build/ecsy.module.js";
         import { Position, Velocity, Link } from "../components.js";
         import { force_graph } from '../index.js';
         //TODO node data/pictures/functions examples and documentation
@@ -106,8 +106,7 @@
         });
 
         async function setup() {
-            let node1 = await forceGraph.addNode();
-            forceGraph.anchorNode(node1);
+            let node1 = (await forceGraph.addNode()).makeAnchor();
 
             let inputSystem = forceGraph.world.getSystem(InputSystem);
             for (let i = 0; i < 30; i++) {

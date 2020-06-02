@@ -1,6 +1,6 @@
 {
     "name": "@nico-schoeman/force-graph",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "description",
     "main": "index.js",
     "scripts": {
@@ -11,8 +11,10 @@
     "author": "Nico Schoeman",
     "license": "ISC",
     "dependencies": {
-        "ecsy": "^0.1.4"
+        "ecsy": "^0.2.4"
     },
     "repository": "git://github.com/nico-schoeman/force-graph.git",
-    "publishConfig": { "registry": "https://npm.pkg.github.com/" }
+    "publishConfig": {
+        "registry": "https://npm.pkg.github.com/"
+    }
 }

@@ -1,4 +1,4 @@
-import { World, Entity } from "./node_modules/ecsy/build/ecsy.module.js";
+import { World } from "./node_modules/ecsy/build/ecsy.module.js";
 import { Position, Velocity, Link, Anchor } from "./components.js";
 import {
     AttractSystem,
@@ -46,6 +46,12 @@ force_graph.prototype.addNode = async function(x, y) {
             value: newPos
         })
         .addComponent(Velocity);
+
+    node.makeAnchor = () => {
+      node.addComponent(Anchor);
+      return node;
+    }
+
     return node;
 }
 
@@ -54,11 +60,6 @@ force_graph.prototype.addLink = async function(fromNode, toNode) {
         .createEntity()
         .addComponent(Link, { from: fromNode.id, to: toNode.id });
     return link;
-}
-
-Entity.prototype.makeAnchor = function() {
-    this.addComponent(Anchor);
-    return this;
 }
 
 force_graph.prototype.anchorNode = async function(node) {
